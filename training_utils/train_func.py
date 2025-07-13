@@ -1,20 +1,21 @@
-from setup_env import device, dtype, logger
+from setup_env import device
+
+import math
 
 import torch
 
 def train_cnn(model, train_loader, criterion, optimizer):
-    """
-    Train looping for CNN.
+    """Train looping for CNN.
 
     Args:
-        model (ConvolutionalNeuralNetwork): Model to be trained.
+        model (nn.Module): Model to be trained.
         train_loader (DataLoader): Loader to be iterated through during training.
         criterion (nn.CrossEntropyLoss): Loss function to be minimized.
         optimizer (optim.Adam): Optimization algorithm to minimize loss.
-    
+
     Returns:
-        avg_loss (float): Calculated by dividing total loss by number of samples.
-        accuracy (float): Calculated by dividing total correct predictions by number of samples.
+        float: Calculated by dividing total loss by number of samples.
+        float: Calculated by dividing total correct predictions by number of samples.
     """
     model.train() # Turn off dropout
     
@@ -24,7 +25,7 @@ def train_cnn(model, train_loader, criterion, optimizer):
     total_samples = 0
 
     for images, labels in train_loader:
-        # Ensure on same device
+        # Ensure on targets, labels on device
         images, labels = images.to(device), labels.to(device)
 
         # Zero gradients
@@ -49,4 +50,5 @@ def train_cnn(model, train_loader, criterion, optimizer):
     # Calculate average loss and accuracy
     avg_loss = train_loss / total_samples
     accuracy = total_correct / total_samples
-    return avg_loss, accuracy
+    perplexity = math.exp(avg_loss)
+    return avg_loss, accuracy, perplexity
