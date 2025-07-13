@@ -1,4 +1,6 @@
-from setup_env import device, dtype, logger
+from setup_env import device
+
+import math
 
 import torch
 
@@ -7,11 +9,11 @@ def test_cnn(model, test_loader, criterion):
     Testing loop for CNN.
 
     Args:
-        model (ConvolutionalNeuralNetwork): Model to be tested.
+        model (nn.Module): Model to be tested.
         test_loader (DataLoader): Loader to be iterated through during testing.
 
     Returns:
-        accuracy (float): Calculated by dividing total correct predictions by number of samples.
+        float: Calculated by dividing total correct predictions by number of samples.
     """
     model.eval() # Turn off training
 
@@ -22,7 +24,7 @@ def test_cnn(model, test_loader, criterion):
     # Turn off gradient computation
     with torch.no_grad():
         for images, labels in test_loader:
-            # Ensure images, labels on same device
+            # Ensure targets, labels on same device
             images, labels = images.to(device), labels.to(device)
 
             # Forward pass
@@ -40,4 +42,5 @@ def test_cnn(model, test_loader, criterion):
     # Calculate accuracy
     avg_loss = test_loss / total_samples
     accuracy = total_correct / total_samples
-    return avg_loss, accuracy
+    perplexity = math.exp(avg_loss)
+    return avg_loss, accuracy, perplexity
