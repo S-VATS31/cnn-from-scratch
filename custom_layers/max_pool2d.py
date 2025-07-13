@@ -4,28 +4,26 @@ import torch
 import torch.nn.functional as F
 
 class MaxPool2D:
+    """Initialize MaxPool2D layer.
+
+    Args:
+        kernel_size (int): Size of pooling window.
+        stride (int): stride for convolution (applied both height and width)
+        padding (int): padding applied to input (applied both height and width)
+    """
     def __init__(
         self, 
         kernel_size: int, 
         stride: int, 
         padding: int = 0
     ):
-        """
-        Initialize MaxPool2D layer.
-
-        Args:
-            kernel_size (int): Size of pooling window.
-            stride (int): stride for convolution (applied both height and width)
-            padding (int): padding applied to input (applied both height and width)
-        """
         # Set up kernel_size, stride, and padding
         self.kernel_size = (kernel_size, kernel_size) if isinstance(kernel_size, int) else kernel_size
         self.stride = (stride, stride) if isinstance(stride, int) else stride
         self.padding = (padding, padding) if isinstance(padding, int) else padding
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Perform forward pass of the MaxPool2D layer.
+        """Perform forward pass of the MaxPool2D layer.
 
         Args:
             x (torch.Tensor): Input tensor of shape [batch_size, in_channels, height_in, width_in]
