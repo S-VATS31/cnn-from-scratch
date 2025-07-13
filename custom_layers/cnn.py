@@ -1,4 +1,4 @@
-from setup_env import device, dtype, logger
+from setup_env import device, dtype
 
 import torch
 import torch.nn as nn
@@ -18,7 +18,7 @@ class ConvolutionalNeuralNetwork(nn.Module):
         weights, bias = Conv2D.init_weights(weights, bias)
         self.conv1 = Conv2D(weights, bias, stride=1, padding=1)
 
-        # Initialize Conv2D
+        # Initialize Conv2D parameters
         weights = torch.empty(32, 16, 3, 3)
         bias = torch.empty(32)
         
@@ -40,7 +40,7 @@ class ConvolutionalNeuralNetwork(nn.Module):
         # Dropout for regularization
         self.dropout = torch.nn.Dropout(p=0.2)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Perform forward pass of the CNN model.
 
@@ -48,22 +48,23 @@ class ConvolutionalNeuralNetwork(nn.Module):
             x (torch.Tensor): Input tensor of shape [batch_size, 1, 28, 28]
 
         Returns:
-            out (torch.Tensor): Output tensor of shape [batch_size, 10]
+            torch.Tensor: Output tensor of shape [batch_size, 10]
         """
-        # Forward through conv1, batchnorm, ReLU, and maxpool1
-        x = self.maxpool1.forward(ReLU(self.bn1(self.conv1.forward(x))))
+        with torch.amp.autocast(device_type=device.type, dtype=dtype):
+            # Forward through conv1, batchnorm, ReLU, and maxpool1
+            x = self.maxpool1.forward(ReLU(self.bn1(self.conv1.forward(x))))
 
-        # Forward through conv2, batchnorm, ReLU, and maxpool2
-        x = self.maxpool2.forward(ReLU(self.bn2(self.conv2.forward(x))))
+            # Forward through conv2, batchnorm, ReLU, and maxpool2
+            x = self.maxpool2.forward(ReLU(self.bn2(self.conv2.forward(x))))
 
-        # Flatten output for fully connected layer
-        batch_size = x.shape[0]
-        x = x.view(batch_size, -1)
+            # Flatten output for fully connected layer
+            batch_size = x.shape[0]
+            x = x.view(batch_size, -1)
 
-        # Apply dropout
-        x = self.dropout(x)
+            # Apply dropout
+            x = self.dropout(x)
 
-        # Fully connected layer
-        out = self.linear(x)
+            # Fully connected layer
+            out = self.linear(x)
 
-        return out
+            return out
