@@ -1,3 +1,5 @@
+from setup_env import device, dtype
+
 import torch
 
 def ReLU(x: torch.Tensor):
@@ -8,6 +10,7 @@ def ReLU(x: torch.Tensor):
         x (torch.Tensor): Input tensor of shape [out_channels, in_channels, height_in, width_in]
 
     Returns:
-        x (torch.Tensor): Output tensor with ReLU applied element-wise with same shape as earlier.
+        torch.Tensor: Output tensor with ReLU applied element-wise with same shape as earlier.
     """
-    return torch.clamp(x, min=0)
+    with torch.amp.autocast(device_type=device.type, dtype=dtype):
+        return torch.clamp(x, min=0)
