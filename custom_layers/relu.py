@@ -2,7 +2,7 @@ from setup_env import device, dtype
 
 import torch
 
-def ReLU(x: torch.Tensor):
+def ReLU(x: torch.Tensor) -> torch.Tensor:
     """
     Apply ReLU activation element-wise to input tensor.
 
