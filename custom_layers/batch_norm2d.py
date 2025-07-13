@@ -10,9 +10,7 @@ class BatchNorm2D(nn.Module):
         eps: float = 1e-6, 
         momentum: float = 0.1
     ):
-        super().__init__()
-        """
-        Initialize BatchNorm2D Layer.
+        """Custom BatchNorm2D with minimal PyTorch interference.
 
         Args:
             in_channels (int): Number of channels in the input tensor, x.
@@ -21,6 +19,7 @@ class BatchNorm2D(nn.Module):
                 Larger momentum means stats are updated quicker and focus more on recent stats.
                 Lower momentum means stats are updated slower and focus more around past stats. 
         """
+        super().__init__()
         self.in_channels = in_channels
         self.eps = eps
         self.momentum = momentum
